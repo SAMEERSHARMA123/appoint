@@ -1,9 +1,19 @@
 const Booking = require('../models/Booking');
 
 const formatSlot = (rawSlot) => {
-  // Only accept slot values like "08:00 AM", "08:30 AM", etc.
-  if (typeof rawSlot === 'string' && /^(0[8-9]|1[0-9]|2[0-3]):[0-5][0-9] (AM|PM)$/.test(rawSlot)) {
-    return rawSlot;
+  // Accept slot values like "08:00 AM", "8:00 AM", "08:30 am", etc.
+  if (
+    typeof rawSlot === 'string' &&
+    /^([0]?[8-9]|1[0-9]|2[0-3]):[0-5][0-9] ?([AaPp][Mm])$/.test(
+      rawSlot.replace(/\s+/g, '').replace(/\./g, '')
+    )
+  ) {
+    // Normalize to "HH:MM AM/PM" format
+    let [time, period] = rawSlot.trim().split(' ');
+    let [h, m] = time.split(':');
+    h = h.padStart(2, '0');
+    period = period ? period.toUpperCase() : '';
+    return `${h}:${m} ${period}`;
   }
   throw new Error('Invalid slot format');
 };
