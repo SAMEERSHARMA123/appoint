@@ -4,26 +4,20 @@ const generateSlots = () => {
   let minute = 0;
 
   while (hour < 24) {
-    const date = new Date();
-    date.setHours(hour, minute, 0, 0);
-    let formatted = date.toLocaleTimeString('en-IN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: 'Asia/Kolkata'
-    });
-    // Ensure AM/PM is uppercase
-    formatted = formatted.replace('am', 'AM').replace('pm', 'PM');
-    slots.push(formatted); // example: "08:00 AM"
+    // Always format with leading zero and uppercase AM/PM
+    let h = hour.toString().padStart(2, '0');
+    let m = minute.toString().padStart(2, '0');
+    let period = hour < 12 ? 'AM' : 'PM';
+    let formatted = `${h}:${m} ${period}`;
+    slots.push(formatted);
     minute += 30;
     if (minute === 60) {
       hour += 1;
       minute = 0;
     }
-
     if (hour === 24) break;
   }
-console.log(slots);
+  // console.log(slots);
   return slots;
   
   
